@@ -1,0 +1,40 @@
+name: flutter_app
+description: A new Flutter application.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.2.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  get_it:
+  dartz:
+  http:
+  shared_preferences:
+  chopper:
+  provider:
+  data_connection_checker:
+  built_value:
+  cupertino_icons:
+  flutter_bloc:
+  equatable:
+  moor_flutter:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  chopper_generator:
+  moor_generator:
+  build_runner:
+  built_value_generator:
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - locale/strings_en.json
+    - locale/strings_bg.json
