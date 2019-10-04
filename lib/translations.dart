@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
+import 'application.dart';
+
 class Translations {
   Translations(Locale locale) {
     this.locale = locale;
@@ -18,7 +20,10 @@ class Translations {
   }
 
   String text(String key) {
-    return _localizedValues[key] ?? '** $key not found **';
+    if (_localizedValues == null) {
+      return '';
+    }
+    return _localizedValues[key] ?? '** $key not found**';
   }
 
   static Future<Translations> load(Locale locale) async {
@@ -32,15 +37,18 @@ class Translations {
   get currentLanguage => locale.languageCode;
 }
 
-class TranslationsDelegate extends LocalizationsDelegate<Translations> {
-  const TranslationsDelegate();
+class SpecificLocalizationDelegate extends LocalizationsDelegate<Translations> {
+  final Locale overriddenLocale;
+
+  const SpecificLocalizationDelegate(this.overriddenLocale);
 
   @override
-  bool isSupported(Locale locale) => ['en', 'bg'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => overriddenLocale != null;
 
   @override
-  Future<Translations> load(Locale locale) => Translations.load(locale);
+  Future<Translations> load(Locale locale) =>
+      Translations.load(overriddenLocale);
 
   @override
-  bool shouldReload(TranslationsDelegate old) => false;
+  bool shouldReload(LocalizationsDelegate<Translations> old) => true;
 }

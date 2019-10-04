@@ -9,6 +9,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
+import 'application.dart';
+import 'shared_preferences_helper.dart';
+
+typedef void LocaleChangeCallback(Locale locale);
+
 void main() {
   _setupLogging();
   runApp(MyApp());
@@ -21,7 +26,29 @@ void _setupLogging() {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  SpecificLocalizationDelegate _localeOverrideDelegate;
+
+  @override
+  void initState() {
+    super.initState();
+    applic.onLocaleChanged = onLocaleChange;
+    _localeOverrideDelegate =
+        new SpecificLocalizationDelegate(Locale('en', ''));
+    _setLocale();
+  }
+
+  onLocaleChange(Locale locale) {
+    setState(() {
+      _localeOverrideDelegate = new SpecificLocalizationDelegate(locale);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -34,24 +61,27 @@ class MyApp extends StatelessWidget {
 
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
     return Provider(
-        builder: (_) => PostApiService.create(),
-        dispose: (_, PostApiService service) => service.client.dispose(),
-        child: Provider(
-          builder: (_) => AppDatabase(),
-          child: MaterialApp(
-            title: 'Flutter Demo',
-            theme: state.themeData,
-            home: HomePage(),
-            localizationsDelegates: [
-              const TranslationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', ''),
-              const Locale('bg', 'BG'),
-            ],
-          ),
-        ));
+      builder: (_) => PostApiService.create(),
+      dispose: (_, PostApiService service) => service.client.dispose(),
+      child: Provider(
+        builder: (_) => AppDatabase(),
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: state.themeData,
+          home: HomePage(),
+          localizationsDelegates: [
+            _localeOverrideDelegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: applic.supportedLocales(),
+        ),
+      ),
+    );
+  }
+
+  _setLocale() async {
+    String locale = await SharedPreferencesHelper.getSelectedLanguage();
+    applic.onLocaleChanged(Locale(locale, ''));
   }
 }

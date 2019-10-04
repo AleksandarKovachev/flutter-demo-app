@@ -1,5 +1,6 @@
 {
   "app_title": "Заглавие",
   "settings": "Настройки",
-  "settings_theme_change": "Тъмна тема"
+  "settings_theme_change": "Тъмна тема",
+  "settings_language_change": "Език"
 }
