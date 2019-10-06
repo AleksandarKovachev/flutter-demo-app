@@ -1,6 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/data/post_api_service.dart';
+import 'package:flutter_app/core/service/post_api_service.dart';
 import 'package:flutter_app/model/built_post.dart';
 import 'package:provider/provider.dart';
 

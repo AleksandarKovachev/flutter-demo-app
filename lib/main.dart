@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/service/post_api_service.dart';
+import 'package:flutter_app/core/service/trivia_number_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
-import 'package:flutter_app/data/post_api_service.dart';
 import 'package:flutter_app/translations.dart';
 import 'package:flutter_app/ui/global/theme/block/bloc.dart';
 import 'package:flutter_app/ui/home/home_page.dart';
@@ -60,22 +61,30 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
-    return Provider(
-      builder: (_) => PostApiService.create(),
-      dispose: (_, PostApiService service) => service.client.dispose(),
-      child: Provider(
-        builder: (_) => AppDatabase(),
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: state.themeData,
-          home: HomePage(),
-          localizationsDelegates: [
-            _localeOverrideDelegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: applic.supportedLocales(),
+    return MultiProvider(
+      providers: [
+        Provider(
+          builder: (_) => PostApiService.create(),
+          dispose: (_, PostApiService service) => service.client.dispose(),
         ),
+        Provider(
+          builder: (_) => TriviaNumberService.create(),
+          dispose: (_, TriviaNumberService service) => service.client.dispose(),
+        ),
+        Provider(
+          builder: (_) => AppDatabase(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: state.themeData,
+        home: HomePage(),
+        localizationsDelegates: [
+          _localeOverrideDelegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: applic.supportedLocales(),
       ),
     );
   }
