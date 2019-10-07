@@ -4,7 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
+typedef void LocaleChangeCallback(Locale locale);
+
 class Translations {
+  static final List<String> supportedLanguages = ['en','bg'];
+
+  static Iterable<Locale> supportedLocales() => supportedLanguages.map<Locale>((lang) => new Locale(lang, ''));
+
+  static LocaleChangeCallback onLocaleChanged;
+
   Translations(Locale locale) {
     this.locale = locale;
     _localizedValues = null;
