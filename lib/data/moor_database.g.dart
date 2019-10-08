@@ -6,7 +6,7 @@ part of 'moor_database.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class Post extends DataClass implements Insertable<Post> {
   final int id;
   final String title;
@@ -90,10 +90,10 @@ class Post extends DataClass implements Insertable<Post> {
   bool operator ==(other) =>
       identical(this, other) ||
       (other is Post &&
-          other.id == id &&
-          other.title == title &&
-          other.body == body &&
-          other.createdDate == createdDate);
+          other.id == this.id &&
+          other.title == this.title &&
+          other.body == this.body &&
+          other.createdDate == this.createdDate);
 }
 
 class PostsCompanion extends UpdateCompanion<Post> {
@@ -107,6 +107,13 @@ class PostsCompanion extends UpdateCompanion<Post> {
     this.body = const Value.absent(),
     this.createdDate = const Value.absent(),
   });
+  PostsCompanion.insert({
+    this.id = const Value.absent(),
+    @required String title,
+    @required String body,
+    this.createdDate = const Value.absent(),
+  })  : title = Value(title),
+        body = Value(body);
   PostsCompanion copyWith(
       {Value<int> id,
       Value<String> title,

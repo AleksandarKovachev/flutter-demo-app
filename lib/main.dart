@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/service/post_api_service.dart';
-import 'package:flutter_app/core/service/trivia_number_service.dart';
+import 'package:flutter_app/core/service/number_trivia_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
 import 'package:flutter_app/translations.dart';
 import 'package:flutter_app/ui/global/theme/block/bloc.dart';
@@ -10,13 +10,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
-import 'application.dart';
+import 'injection_container.dart' as di;
 import 'shared_preferences_helper.dart';
 
 typedef void LocaleChangeCallback(Locale locale);
 
-void main() {
+void main() async {
   _setupLogging();
+  await di.init();
   runApp(MyApp());
 }
 
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    applic.onLocaleChanged = onLocaleChange;
+    Translations.onLocaleChanged = onLocaleChange;
     _localeOverrideDelegate =
         new SpecificLocalizationDelegate(Locale('en', ''));
     _setLocale();
@@ -68,8 +69,8 @@ class _MyAppState extends State<MyApp> {
           dispose: (_, PostApiService service) => service.client.dispose(),
         ),
         Provider(
-          builder: (_) => TriviaNumberService.create(),
-          dispose: (_, TriviaNumberService service) => service.client.dispose(),
+          builder: (_) => NumberTriviaService.create(),
+          dispose: (_, NumberTriviaService service) => service.client.dispose(),
         ),
         Provider(
           builder: (_) => AppDatabase(),
@@ -84,13 +85,13 @@ class _MyAppState extends State<MyApp> {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: applic.supportedLocales(),
+        supportedLocales: Translations.supportedLocales(),
       ),
     );
   }
 
   _setLocale() async {
     String locale = await SharedPreferencesHelper.getSelectedLanguage();
-    applic.onLocaleChanged(Locale(locale, ''));
+    Translations.onLocaleChanged(Locale(locale, ''));
   }
 }

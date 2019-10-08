@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'trivia_number_service.dart';
+part of 'number_trivia_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
 // **************************************************************************
 
-class _$TriviaNumberService extends TriviaNumberService {
-  _$TriviaNumberService([ChopperClient client]) {
+class _$NumberTriviaService extends NumberTriviaService {
+  _$NumberTriviaService([ChopperClient client]) {
     if (client == null) return;
     this.client = client;
   }
 
-  final definitionType = TriviaNumberService;
+  final definitionType = NumberTriviaService;
 
   Future<Response<BuiltNumberTriviaModel>> getConcreteNumberTrivia(int number) {
-    final $url = '/${number}';
+    final $url = '/${number}?json';
     final $request = Request('GET', $url, client.baseUrl);
     return client
         .send<BuiltNumberTriviaModel, BuiltNumberTriviaModel>($request);

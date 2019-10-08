@@ -1,20 +1,11 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:chopper/chopper.dart';
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/error/failures.dart';
-import 'package:flutter_app/core/network/network_info.dart';
 import 'package:flutter_app/core/service/post_api_service.dart';
-import 'package:flutter_app/core/service/trivia_number_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
 import 'package:flutter_app/data/moor_database.dart' as prefix0;
 import 'package:flutter_app/data/new_post_input.dart';
-import 'package:flutter_app/features/nuber_trivia/data/datasources/number_trivia_local_data_source.dart';
-import 'package:flutter_app/features/nuber_trivia/data/datasources/number_trivia_remote_data_source.dart';
-import 'package:flutter_app/features/nuber_trivia/data/repositories/number_trivia_repository_impl.dart';
-import 'package:flutter_app/features/nuber_trivia/domain/entities/number_trivia.dart';
-import 'package:flutter_app/features/nuber_trivia/domain/usecases/get_random_number_trivia.dart';
+import 'package:flutter_app/features/nuber_trivia/presentation/pages/number_trivia_page.dart';
 import 'package:flutter_app/model/built_post.dart';
 import 'package:flutter_app/translations.dart';
 import 'package:flutter_app/ui/settings/settings_page.dart';
@@ -53,9 +44,7 @@ class HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: _selectedIndex == 0
-          ? _buildNumberTriviaPage(context)
-          : _buildPostPage(),
+      body: _selectedIndex == 0 ? NumberTriviaPage() : _buildPostPage(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -87,34 +76,6 @@ class HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  FutureBuilder<dartz.Either<Failure, NumberTrivia>> _buildNumberTriviaPage(
-      BuildContext context) {
-    return FutureBuilder<dartz.Either<Failure, NumberTrivia>>(
-      future: GetRandomNumberTrivia(
-        NumberTriviaRepositoryImpl(
-            networkInfo: NetworkInfoImpl(DataConnectionChecker()),
-            remoteDataSource: NumberTriviaRemoteDataSourceImpl(
-              service: Provider.of<TriviaNumberService>(context),
-            ),
-            localDataSource: NumberTriviaLocalDataSourceImpl()),
-      )(null),
-      builder: (context, snapshot) {
-        if (snapshot == null || snapshot.data == null) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return Center(
-          child: Text(
-            snapshot.data.getOrElse(() => throw 'Exception').text,
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.3,
-          ),
-        );
-      },
-    );
   }
 
   _buildPostPage() {

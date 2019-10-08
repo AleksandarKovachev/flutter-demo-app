@@ -1,6 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_app/core/error/exceptions.dart';
-import 'package:flutter_app/core/service/trivia_number_service.dart';
+import 'package:flutter_app/core/service/number_trivia_service.dart';
 import 'package:flutter_app/features/nuber_trivia/data/models/built_number_trivia_model.dart';
 import 'package:flutter_app/features/nuber_trivia/data/models/number_trivia_model.dart';
 import 'package:flutter_app/features/nuber_trivia/domain/entities/number_trivia.dart';
@@ -13,7 +13,7 @@ abstract class NumberTriviaRemoteDataSource {
 }
 
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
-  final TriviaNumberService service;
+  final NumberTriviaService service;
 
   NumberTriviaRemoteDataSourceImpl({@required this.service});
 

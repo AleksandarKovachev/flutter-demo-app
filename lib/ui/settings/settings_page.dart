@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/application.dart';
 import 'package:flutter_app/translations.dart';
 import 'package:flutter_app/ui/global/theme/app_themes.dart';
 import 'package:flutter_app/ui/global/theme/block/bloc.dart';
@@ -52,14 +51,14 @@ class SettingsState extends State<SettingsPage> {
                       .text('settings_language_change')),
                   trailing: DropdownButton(
                     value: snapshot.data,
-                    items: applic.supportedLanguages.map((String value) {
+                    items: Translations.supportedLanguages.map((String value) {
                       return new DropdownMenuItem<String>(
                         value: value,
                         child: new Text(value),
                       );
                     }).toList(),
                     onChanged: (value) {
-                      applic.onLocaleChanged(new Locale(value, ''));
+                      Translations.onLocaleChanged(new Locale(value, ''));
                       setState(() {
                         SharedPreferencesHelper.setSelectedLanguage(value);
                       });
