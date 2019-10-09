@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/widgets/loading_widget.dart';
+import 'package:flutter_app/core/widgets/message_display.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/bloc/number_trivia_bloc.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/bloc/number_trivia_state.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/widgets/widgets.dart';

@@ -24,10 +24,11 @@ class BuiltValueConverter extends JsonConverter {
   dynamic _convertToCustomObject<SingleItemType>(dynamic element) {
     if (element is SingleItemType) return element;
 
-    if (element is List)
+    if (element is List) {
       return _deserializeListOf<SingleItemType>(element);
-    else
+    } else {
       return _deserialize<SingleItemType>(element);
+    }
   }
 
   BuiltList<SingleItemType> _deserializeListOf<SingleItemType>(

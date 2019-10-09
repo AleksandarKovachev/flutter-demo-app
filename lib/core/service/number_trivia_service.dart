@@ -1,5 +1,5 @@
 import 'package:chopper/chopper.dart';
-import 'package:flutter_app/data/built_value_converter.dart';
+import 'package:flutter_app/core/built_value_converter.dart';
 import 'package:flutter_app/features/nuber_trivia/data/models/built_number_trivia_model.dart';
 
 part 'number_trivia_service.chopper.dart';

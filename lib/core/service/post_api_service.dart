@@ -1,6 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:chopper/chopper.dart';
-import 'package:flutter_app/data/built_value_converter.dart';
+import 'package:flutter_app/core/built_value_converter.dart';
 import 'package:flutter_app/model/built_post.dart';
 
 part 'post_api_service.chopper.dart';

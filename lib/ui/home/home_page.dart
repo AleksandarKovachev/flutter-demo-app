@@ -5,6 +5,7 @@ import 'package:flutter_app/core/service/post_api_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
 import 'package:flutter_app/data/moor_database.dart' as prefix0;
 import 'package:flutter_app/data/new_post_input.dart';
+import 'package:flutter_app/features/cat_fact/presentation/pages/cat_fact_page.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/pages/number_trivia_page.dart';
 import 'package:flutter_app/model/built_post.dart';
 import 'package:flutter_app/translations.dart';
@@ -27,6 +28,12 @@ class HomePageState extends State<HomePage> {
     _selectedIndex = 0;
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,12 +51,16 @@ class HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: _selectedIndex == 0 ? NumberTriviaPage() : _buildPostPage(),
+      body: _buildBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             title: Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.scatter_plot),
+            title: Text('Cat Facts'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_post_office),
@@ -72,10 +83,14 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  _buildBody(int selectedIndex) {
+    if (selectedIndex == 0) {
+      return NumberTriviaPage();
+    } else if (selectedIndex == 1) {
+      return CatFactPage();
+    } else {
+      return _buildPostPage();
+    }
   }
 
   _buildPostPage() {
@@ -86,7 +101,7 @@ class HomePageState extends State<HomePage> {
         children: <Widget>[
           NewPostInput(),
           _buildPostList(context),
-          _buildBody(context),
+          _buildPostBody(context),
         ],
       ),
     );
@@ -128,7 +143,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  FutureBuilder<Response> _buildBody(BuildContext context) {
+  FutureBuilder<Response> _buildPostBody(BuildContext context) {
     return FutureBuilder<Response<BuiltList<BuiltPost>>>(
       future: Provider.of<PostApiService>(context).getPosts(),
       builder: (context, snapshot) {
