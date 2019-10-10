@@ -5,6 +5,7 @@ import 'package:flutter_app/core/service/post_api_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
 import 'package:flutter_app/data/moor_database.dart' as prefix0;
 import 'package:flutter_app/data/new_post_input.dart';
+import 'package:flutter_app/features/animal_image/presentation/pages/animal_image_page.dart';
 import 'package:flutter_app/features/cat_fact/presentation/pages/cat_fact_page.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/pages/number_trivia_page.dart';
 import 'package:flutter_app/model/built_post.dart';
@@ -63,6 +64,10 @@ class HomePageState extends State<HomePage> {
             title: Text('Cat Facts'),
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.image),
+            title: Text('Animal Images'),
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.local_post_office),
             title: Text('Post'),
           ),
@@ -88,6 +93,8 @@ class HomePageState extends State<HomePage> {
       return NumberTriviaPage();
     } else if (selectedIndex == 1) {
       return CatFactPage();
+    } else if (selectedIndex == 2) {
+      return AnimalImagePage();
     } else {
       return _buildPostPage();
     }

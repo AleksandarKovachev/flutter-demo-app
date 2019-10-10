@@ -12,5 +12,5 @@ final appThemeData = {
     brightness: Brightness.light,
     primaryColor: Colors.white,
     accentColor: Colors.blue,
-  )
+  ),
 };

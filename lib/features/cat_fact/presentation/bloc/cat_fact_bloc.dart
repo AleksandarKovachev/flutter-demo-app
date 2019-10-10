@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_app/core/error/failures.dart';
 import 'package:flutter_app/core/usecases/usecase.dart';
-import 'package:flutter_app/core/util/input_converter.dart';
 import 'package:flutter_app/features/cat_fact/domain/entities/cat_fact.dart';
 import 'package:flutter_app/features/cat_fact/domain/usecases/get_cat_facts.dart';
 import 'package:meta/meta.dart';
@@ -16,13 +15,10 @@ const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
 
 class CatFactBloc extends Bloc<CatFactEvent, CatFactState> {
   final GetCatFacts getCatFacts;
-  final InputConverter inputConverter;
 
   CatFactBloc({
     @required GetCatFacts getCatFacts,
-    @required this.inputConverter,
   })  : assert(getCatFacts != null),
-        assert(inputConverter != null),
         getCatFacts = getCatFacts;
 
   @override

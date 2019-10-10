@@ -1,5 +1,10 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter_app/core/service/animal_image_service.dart';
 import 'package:flutter_app/core/service/cat_fact_service.dart';
+import 'package:flutter_app/features/animal_image/data/repositories/animal_image_repository_impl.dart';
+import 'package:flutter_app/features/animal_image/domain/usecases/get_dog_image.dart';
+import 'package:flutter_app/features/animal_image/domain/usecases/get_fox_image.dart';
+import 'package:flutter_app/features/animal_image/presentation/bloc/animal_image_bloc.dart';
 import 'package:flutter_app/features/cat_fact/data/repositories/cat_fact_repository_impl.dart';
 import 'package:flutter_app/features/cat_fact/domain/usecases/get_cat_facts.dart';
 import 'package:get_it/get_it.dart';
@@ -8,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/network_info.dart';
 import 'core/service/number_trivia_service.dart';
 import 'core/util/input_converter.dart';
+import 'features/animal_image/data/datasources/animal_image_remote_data_source.dart';
+import 'features/animal_image/domain/repositories/animal_image_repository.dart';
+import 'features/animal_image/domain/usecases/get_cat_image.dart';
 import 'features/cat_fact/data/datasources/cat_fact_remote_data_source.dart';
 import 'features/cat_fact/domain/repositories/cat_fact_repository.dart';
 import 'features/cat_fact/presentation/bloc/cat_fact_bloc.dart';
@@ -34,7 +42,14 @@ Future<void> init() async {
   sl.registerFactory(
     () => CatFactBloc(
       getCatFacts: sl(),
-      inputConverter: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => AnimalImageBloc(
+      getCatImage: sl(),
+      getDogImage: sl(),
+      getFoxImage: sl(),
     ),
   );
 
@@ -43,6 +58,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetRandomNumberTrivia(sl()));
 
   sl.registerLazySingleton(() => GetCatFacts(sl()));
+
+  sl.registerLazySingleton(() => GetDogImage(sl()));
+  sl.registerLazySingleton(() => GetFoxImage(sl()));
+  sl.registerLazySingleton(() => GetCatImage(sl()));
 
   // Repository
   sl.registerLazySingleton<NumberTriviaRepository>(
@@ -55,6 +74,13 @@ Future<void> init() async {
 
   sl.registerLazySingleton<CatFactRepository>(
     () => CatFactRepositoryImpl(
+      networkInfo: sl(),
+      remoteDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<AnimalImageRepository>(
+    () => AnimalImageRepositoryImpl(
       networkInfo: sl(),
       remoteDataSource: sl(),
     ),
@@ -73,9 +99,14 @@ Future<void> init() async {
     () => CatFactRemoteDataSourceImpl(service: sl()),
   );
 
+  sl.registerLazySingleton<AnimalImageRemoteDataSource>(
+    () => AnimalImageRemoteDataSourceImpl(service: sl()),
+  );
+
   // Services
   sl.registerLazySingleton(() => NumberTriviaService.create());
   sl.registerLazySingleton(() => CatFactService.create());
+  sl.registerLazySingleton(() => AnimalImageService.create());
 
   //! Core
   sl.registerLazySingleton(() => InputConverter());
