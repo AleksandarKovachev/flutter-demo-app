@@ -1,31 +1,19 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:chopper/chopper.dart';
-import 'package:flutter_app/core/built_value_converter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_app/features/animal_image/data/models/animal_image_model.dart';
+import 'package:retrofit/retrofit.dart';
 
-part 'animal_image_service.chopper.dart';
+part 'animal_image_service.g.dart';
 
-@ChopperApi()
-abstract class AnimalImageService extends ChopperService {
-  @Get(path: 'https://random.dog/woof.json')
-  Future<Response> getDogImage();
+@RestApi()
+abstract class AnimalImageService {
+  factory AnimalImageService(Dio dio) = _AnimalImageService;
 
-  @Get(path: 'https://randomfox.ca/floof/')
-  Future<Response> getFoxImage();
+  @GET('https://random.dog/woof.json')
+  Future<AnimalImageModel> getDogImage();
 
-  @Get(path: 'https://api.thecatapi.com/v1/images/search')
-  Future<Response> getCatImage();
+  @GET('https://randomfox.ca/floof/')
+  Future<AnimalImageModel> getFoxImage();
 
-  static AnimalImageService create() {
-    final client = ChopperClient(
-      services: [
-        _$AnimalImageService(),
-      ],
-      converter: BuiltValueConverter(),
-      interceptors: [
-        HttpLoggingInterceptor(),
-      ],
-    );
-    return _$AnimalImageService(client);
-  }
+  @GET('https://api.thecatapi.com/v1/images/search')
+  Future<List<AnimalImageModel>> getCatImage();
 }

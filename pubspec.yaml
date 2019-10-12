@@ -14,7 +14,7 @@ dependencies:
   get_it:
   dartz:
   shared_preferences:
-  chopper:
+  retrofit:
   provider:
   data_connection_checker:
   built_value:
@@ -23,15 +23,16 @@ dependencies:
   equatable:
   moor_flutter:
   cached_network_image:
+  logger:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  chopper_generator:
+  retrofit_generator:
   moor_generator:
   build_runner:
   built_value_generator:
-
+  json_serializable:
 
 flutter:
   uses-material-design: true

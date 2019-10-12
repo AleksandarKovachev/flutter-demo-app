@@ -16,10 +16,10 @@ class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDataSource {
 
   @override
   Future<NumberTriviaModel> getLastNumberTrivia() {
-    final text = sharedPreferences.getString(TRIVIA_TEXT);
-    final number = sharedPreferences.getInt(TRIVIA_NUMBER);
+    final text = sharedPreferences.getString('TRIVIA_TEXT');
+    final number = sharedPreferences.getInt('TRIVIA_NUMBER');
     if (text.isNotEmpty && number != null) {
-      return Future.value(NumberTriviaModel(text: text, number: number));
+      return Future.value(NumberTriviaModel(text, number));
     } else {
       throw CacheException(message: 'Cache error!');
     }
@@ -27,7 +27,7 @@ class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDataSource {
 
   @override
   Future<void> cacheNumberTrivia(NumberTriviaModel triviaToCache) {
-    sharedPreferences.setString(TRIVIA_TEXT, triviaToCache.text);
-    return sharedPreferences.setInt(TRIVIA_NUMBER, triviaToCache.number);
+    sharedPreferences.setString('TRIVIA_TEXT', triviaToCache.text);
+    return sharedPreferences.setInt('TRIVIA_NUMBER', triviaToCache.number);
   }
 }

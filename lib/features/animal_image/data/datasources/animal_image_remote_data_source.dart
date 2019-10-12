@@ -1,8 +1,5 @@
-import 'dart:convert';
-
-import 'package:chopper/chopper.dart';
-import 'package:flutter_app/core/error/exceptions.dart';
 import 'package:flutter_app/core/service/animal_image_service.dart';
+import 'package:flutter_app/features/animal_image/data/models/animal_image_model.dart';
 import 'package:flutter_app/features/animal_image/domain/entities/animal_image.dart';
 import 'package:meta/meta.dart';
 
@@ -21,9 +18,8 @@ class AnimalImageRemoteDataSourceImpl implements AnimalImageRemoteDataSource {
 
   @override
   Future<AnimalImage> getCatImage() async {
-    return await _getAnimalImage(() {
-      return service.getCatImage();
-    });
+    final response = await service.getCatImage();
+    return _buildBody(response[0], null);
   }
 
   @override
@@ -41,25 +37,16 @@ class AnimalImageRemoteDataSourceImpl implements AnimalImageRemoteDataSource {
   }
 
   Future<AnimalImage> _getAnimalImage(
-      Future<Response> Function() getAnimalImage) async {
-    final response = await getAnimalImage();
-    if (response.isSuccessful && response.bodyString != null) {
-      final decodedResponse = json.decode(response.bodyString);
-      if (decodedResponse is List) {
-        return _buildBody(decodedResponse[0], getAnimalImage);
-      }
-      return _buildBody(decodedResponse, getAnimalImage);
-    } else {
-      throw ServerException(message: 'Request error!');
-    }
+      Future<AnimalImageModel> Function() getAnimalImage) async {
+    return _buildBody(await getAnimalImage(), getAnimalImage);
   }
 
-  _buildBody(
-      Map<String, dynamic> body, Future<Response> Function() getAnimalImage) {
-    if (body['url'] != null && (body['url'] as String).contains('mp4')) {
+  _buildBody(AnimalImageModel body,
+      Future<AnimalImageModel> Function() getAnimalImage) {
+    if (body != null && body.url != null && body.url.contains('mp4')) {
       return _getAnimalImage(getAnimalImage);
     }
     return Future.value(
-        AnimalImage(url: body['url'] != null ? body['url'] : body['image']));
+        AnimalImage(url: body.url != null ? body.url : body.image));
   }
 }

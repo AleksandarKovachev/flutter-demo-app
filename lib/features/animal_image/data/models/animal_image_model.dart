@@ -1,8 +1,18 @@
-import 'package:flutter_app/features/animal_image/domain/entities/animal_image.dart';
-import 'package:meta/meta.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class BuiltAnimalImageModel extends AnimalImage {
-  BuiltAnimalImageModel({
-    @required String url,
-  }) : super(url: url);
+part 'animal_image_model.g.dart';
+
+@JsonSerializable()
+class AnimalImageModel {
+  final String url;
+
+  final String image;
+
+  AnimalImageModel(this.url, this.image);
+
+  factory AnimalImageModel.fromJson(Map<String, dynamic> json) =>
+      _$AnimalImageModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AnimalImageModelToJson(this);
+
 }

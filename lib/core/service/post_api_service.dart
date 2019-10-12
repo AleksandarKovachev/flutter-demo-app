@@ -1,39 +1,20 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:chopper/chopper.dart';
-import 'package:flutter_app/core/built_value_converter.dart';
-import 'package:flutter_app/model/built_post.dart';
+import 'package:flutter_app/model/post_model.dart';
+import 'package:retrofit/http.dart';
+import 'package:dio/dio.dart';
 
-part 'post_api_service.chopper.dart';
+part 'post_api_service.g.dart';
 
-@ChopperApi(baseUrl: '/posts')
-abstract class PostApiService extends ChopperService {
-  @Get()
-  Future<Response<BuiltList<BuiltPost>>> getPosts();
+@RestApi(baseUrl: 'https://jsonplaceholder.typicode.com')
+abstract class PostApiService {
+  factory PostApiService(Dio dio) = _PostApiService;
 
-  @Get(path: '/{id}')
-  Future<Response<BuiltPost>> getPost(@Path('id') int id);
+  @GET('/posts')
+  Future<List<PostModel>> getPosts();
 
-  @Post()
-  Future<Response<BuiltPost>> postPost(@Body() BuiltPost body);
+  @GET('/{id}')
+  Future<PostModel> getPost(@Path('id') int id);
 
-  static PostApiService create() {
-    final client = ChopperClient(
-      baseUrl: 'https://jsonplaceholder.typicode.com',
-      services: [
-        _$PostApiService(),
-      ],
-      converter: BuiltValueConverter(),
-      interceptors: [
-        HeadersInterceptor({'Cache-Control': 'no-cache'}),
-        HttpLoggingInterceptor(),
-        (Request request) async {
-          if (request.method == HttpMethod.Post) {
-            chopperLogger.info("Post request");
-          }
-          return request;
-        },
-      ],
-    );
-    return _$PostApiService(client);
-  }
+  @POST('/posts')
+  Future<PostModel> postPost(@Body() PostModel body);
+
 }

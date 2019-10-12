@@ -1,8 +1,7 @@
-import 'package:chopper/chopper.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/service/post_api_service.dart';
-import 'package:flutter_app/model/built_post.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_app/model/post_model.dart';
 
 class SinglePostPage extends StatelessWidget {
   final int postId;
@@ -18,12 +17,11 @@ class SinglePostPage extends StatelessWidget {
         appBar: AppBar(
           title: Text('Chopper Blog'),
         ),
-        body: FutureBuilder<Response<BuiltPost>>(
-          future: Provider.of<PostApiService>(context).getPost(postId),
+        body: FutureBuilder<PostModel>(
+          future: PostApiService(Dio()).getPost(postId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              final post = snapshot.data.body;
-              return _buildPost(post);
+              return _buildPost(snapshot.data);
             } else {
               return Center(
                 child: CircularProgressIndicator(),
@@ -33,7 +31,7 @@ class SinglePostPage extends StatelessWidget {
         ));
   }
 
-  Padding _buildPost(BuiltPost post) {
+  Padding _buildPost(PostModel post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

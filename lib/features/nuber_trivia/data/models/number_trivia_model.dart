@@ -1,12 +1,18 @@
-import 'package:flutter_app/features/nuber_trivia/domain/entities/number_trivia.dart';
-import 'package:meta/meta.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-const TRIVIA_TEXT = 'TRIVIA_TEXT';
-const TRIVIA_NUMBER = 'TRIVIA_NUMBER';
+part 'number_trivia_model.g.dart';
 
-class NumberTriviaModel extends NumberTrivia {
-  NumberTriviaModel({
-    @required String text,
-    @required int number,
-  }) : super(text: text, number: number);
+@JsonSerializable()
+class NumberTriviaModel {
+  final String text;
+
+  final int number;
+
+  NumberTriviaModel(this.text, this.number);
+
+  factory NumberTriviaModel.fromJson(Map<String, dynamic> json) =>
+      _$NumberTriviaModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NumberTriviaModelToJson(this);
+
 }

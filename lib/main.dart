@@ -65,14 +65,6 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         Provider(
-          builder: (_) => PostApiService.create(),
-          dispose: (_, PostApiService service) => service.client.dispose(),
-        ),
-        Provider(
-          builder: (_) => NumberTriviaService.create(),
-          dispose: (_, NumberTriviaService service) => service.client.dispose(),
-        ),
-        Provider(
           builder: (_) => AppDatabase(),
         ),
       ],

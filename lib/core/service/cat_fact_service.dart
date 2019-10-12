@@ -1,24 +1,13 @@
-import 'package:chopper/chopper.dart';
-import 'package:flutter_app/core/built_value_converter.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_app/features/cat_fact/data/models/all_cat_fact_model.dart';
+import 'package:retrofit/retrofit.dart';
 
-part 'cat_fact_service.chopper.dart';
+part 'cat_fact_service.g.dart';
 
-@ChopperApi()
-abstract class CatFactService extends ChopperService {
-  @Get(path: '/')
-  Future<Response> getCatFacts();
+@RestApi(baseUrl: 'https://cat-fact.herokuapp.com')
+abstract class CatFactService {
+  factory CatFactService(Dio dio) = _CatFactService;
 
-  static CatFactService create() {
-    final client = ChopperClient(
-      baseUrl: 'https://cat-fact.herokuapp.com/facts',
-      services: [
-        _$CatFactService(),
-      ],
-      converter: BuiltValueConverter(),
-      interceptors: [
-        HttpLoggingInterceptor(),
-      ],
-    );
-    return _$CatFactService(client);
-  }
+  @GET('/facts')
+  Future<AllCatFactModels> getCatFacts();
 }

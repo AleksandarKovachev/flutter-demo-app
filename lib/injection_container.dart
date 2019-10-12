@@ -1,6 +1,5 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_app/core/service/animal_image_service.dart';
-import 'package:flutter_app/core/service/cat_fact_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_app/features/animal_image/data/repositories/animal_image_repository_impl.dart';
 import 'package:flutter_app/features/animal_image/domain/usecases/get_dog_image.dart';
 import 'package:flutter_app/features/animal_image/domain/usecases/get_fox_image.dart';
@@ -11,7 +10,10 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/network_info.dart';
+import 'core/service/animal_image_service.dart';
+import 'core/service/cat_fact_service.dart';
 import 'core/service/number_trivia_service.dart';
+import 'core/service/post_api_service.dart';
 import 'core/util/input_converter.dart';
 import 'features/animal_image/data/datasources/animal_image_remote_data_source.dart';
 import 'features/animal_image/domain/repositories/animal_image_repository.dart';
@@ -104,9 +106,12 @@ Future<void> init() async {
   );
 
   // Services
-  sl.registerLazySingleton(() => NumberTriviaService.create());
-  sl.registerLazySingleton(() => CatFactService.create());
-  sl.registerLazySingleton(() => AnimalImageService.create());
+  sl.registerLazySingleton<Dio>(() => Dio());
+
+  sl.registerLazySingleton<AnimalImageService>(() => AnimalImageService(sl()));
+  sl.registerLazySingleton<CatFactService>(() => CatFactService(sl()));
+  sl.registerLazySingleton<NumberTriviaService>(() => NumberTriviaService(sl()));
+  sl.registerLazySingleton<PostApiService>(() => PostApiService(sl()));
 
   //! Core
   sl.registerLazySingleton(() => InputConverter());

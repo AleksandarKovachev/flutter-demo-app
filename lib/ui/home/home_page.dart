@@ -1,5 +1,4 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:chopper/chopper.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/service/post_api_service.dart';
 import 'package:flutter_app/data/moor_database.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_app/data/new_post_input.dart';
 import 'package:flutter_app/features/animal_image/presentation/pages/animal_image_page.dart';
 import 'package:flutter_app/features/cat_fact/presentation/pages/cat_fact_page.dart';
 import 'package:flutter_app/features/nuber_trivia/presentation/pages/number_trivia_page.dart';
-import 'package:flutter_app/model/built_post.dart';
+import 'package:flutter_app/model/post_model.dart';
 import 'package:flutter_app/translations.dart';
 import 'package:flutter_app/ui/settings/settings_page.dart';
 import 'package:provider/provider.dart';
@@ -79,10 +78,8 @@ class HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          final newPost = BuiltPost((b) => b
-            ..title = 'New Title'
-            ..body = 'New Body');
-          await Provider.of<PostApiService>(context).postPost(newPost);
+          await PostApiService(Dio())
+              .postPost(PostModel(1, 'New Title', 'New Body'));
         },
       ),
     );
@@ -150,52 +147,35 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  FutureBuilder<Response> _buildPostBody(BuildContext context) {
-    return FutureBuilder<Response<BuiltList<BuiltPost>>>(
-      future: Provider.of<PostApiService>(context).getPosts(),
+  FutureBuilder<List<PostModel>> _buildPostBody(BuildContext context) {
+    return FutureBuilder<List<PostModel>>(
+      future: PostApiService(Dio()).getPosts(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                snapshot.error.toString(),
-                textAlign: TextAlign.center,
-                textScaleFactor: 1.3,
+        if (snapshot.data == null) {
+          return CircularProgressIndicator();
+        }
+        return ListView.builder(
+          itemCount: snapshot.data.length,
+          padding: EdgeInsets.all(8),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 4,
+              child: ListTile(
+                title: Text(
+                  snapshot.data[index].title,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(snapshot.data[index].body),
+                onTap: () => _navigateToPost(
+                  context,
+                  snapshot.data[index].id,
+                ),
               ),
             );
-          }
-          final posts = snapshot.data.body;
-          return _buildPosts(context, posts);
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-
-  ListView _buildPosts(BuildContext context, BuiltList<BuiltPost> posts) {
-    return ListView.builder(
-      itemCount: posts.length,
-      padding: EdgeInsets.all(8),
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return Card(
-          elevation: 4,
-          child: ListTile(
-            title: Text(
-              posts[index].title,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(posts[index].body),
-            onTap: () => _navigateToPost(
-              context,
-              posts[index].id,
-            ),
-          ),
+          },
         );
       },
     );

@@ -1,29 +1,17 @@
-import 'package:chopper/chopper.dart';
-import 'package:flutter_app/core/built_value_converter.dart';
-import 'package:flutter_app/features/nuber_trivia/data/models/built_number_trivia_model.dart';
+import 'package:flutter_app/features/nuber_trivia/data/models/number_trivia_model.dart';
+import 'package:retrofit/retrofit.dart';
+import 'package:dio/dio.dart';
 
-part 'number_trivia_service.chopper.dart';
+part 'number_trivia_service.g.dart';
 
-@ChopperApi()
-abstract class NumberTriviaService extends ChopperService {
-  @Get(path: '/{number}?json')
-  Future<Response<BuiltNumberTriviaModel>> getConcreteNumberTrivia(
+@RestApi(baseUrl: 'http://numbersapi.com')
+abstract class NumberTriviaService {
+  factory NumberTriviaService(Dio dio) = _NumberTriviaService;
+
+  @GET('/{number}?json')
+  Future<NumberTriviaModel> getConcreteNumberTrivia(
       @Path('number') int number);
 
-  @Get(path: '/random?json')
-  Future<Response<BuiltNumberTriviaModel>> getRandomNumberTrivia();
-
-  static NumberTriviaService create() {
-    final client = ChopperClient(
-      baseUrl: 'http://numbersapi.com',
-      services: [
-        _$NumberTriviaService(),
-      ],
-      converter: BuiltValueConverter(),
-      interceptors: [
-        HttpLoggingInterceptor(),
-      ],
-    );
-    return _$NumberTriviaService(client);
-  }
+  @GET('/random?json')
+  Future<NumberTriviaModel> getRandomNumberTrivia();
 }
